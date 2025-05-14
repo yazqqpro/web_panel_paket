@@ -1,0 +1,42 @@
+[
+    {
+        "id": 1,
+        "name": "Akrab Jumbo",
+        "details": "124 GB Full",
+        "price": 100000,
+        "discount_price": 95000,
+        "wa_admin": "6282279698099"
+    },
+    {
+        "id": 2,
+        "name": "Akrab BIG",
+        "details": "Kuota 68 GB - 74 GB full",
+        "price": 70000,
+        "discount_price": 0,
+        "wa_admin": "6282279698099"
+    },
+    {
+        "id": 3,
+        "name": "Akrab Super Big",
+        "details": "Kuota 84 GB full",
+        "price": 79000,
+        "discount_price": 70000,
+        "wa_admin": "6282279698099"
+    },
+    {
+        "id": 4,
+        "name": "Akrab Mini",
+        "details": "Kuota 48GB full",
+        "price": 70000,
+        "discount_price": 65000,
+        "wa_admin": "6282279698099"
+    },
+    {
+        "id": 5,
+        "name": "Akrab Jumbo Lite",
+        "details": "Kuota 105 Gb full",
+        "price": 85000,
+        "discount_price": 80000,
+        "wa_admin": "6282279698099"
+    }
+]

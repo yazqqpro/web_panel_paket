@@ -1,0 +1,483 @@
+<!DOCTYPE html>
+<html lang="id" class="scroll-smooth transition-colors duration-500">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Paket Akrab XL</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" integrity="sha512-9usAa10IRO0HhonpyAIVpjrylPvoDwiPUiKdWk5t3PyolY1cOd4DSE0Ga+ri4AuTroPR5aQvXU9xC6qOPnzFeg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        primary: '#ee4d2d',    // Warna utama Shopee
+                        primaryLight: '#FF6F61',
+                        gold: '#FFD700',
+                        surface: '#F9FAFB',
+                        gray: '#f5f5f5',
+                        darkGray: '#333333',
+                    },
+                    boxShadow: {
+                        'glow-primary': '0 4px 12px rgba(238, 77, 45, 0.3)',
+                        'glow-gold': '0 4px 12px rgba(255, 215, 0, 0.3)',
+                        'shopee': '0 1px 3px rgba(0, 0, 0, 0.1)',
+                        'shopee-lg': '0 4px 15px rgba(0, 0, 0, 0.08)', // Shadow mirip Shopee (lebih besar)
+                        'shopee-xl': '0 8px 25px rgba(0, 0, 0, 0.12)', /* Added for modal */
+                    },
+                },
+            },
+        };
+    </script>
+    <style>
+        /* Efek glassmorphism untuk kartu */
+        .glass {
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 8px; /* Rounded corners */
+            transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+        }
+
+        /* Efek hover pada kartu */
+        .glass:hover {
+            transform: translateY(-4px); /* Sedikit naik saat di-hover */
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1); /* Shadow saat di-hover */
+        }
+
+        /* Efek glassmorphism pada dark mode */
+        .dark .glass {
+            background: rgba(20, 20, 20, 0.5);
+            border-color: rgba(255, 255, 255, 0.1);
+        }
+
+        /* Transisi untuk modal */
+        #modalBox {
+            transition: all 0.3s ease-in-out;
+            border-radius: 12px;
+            /* box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2); */ /* Replaced by Tailwind class */
+        }
+
+        /* Responsive Table Styles */
+        .table-responsive {
+            overflow-x: auto; /* Memungkinkan scroll horizontal */
+            -webkit-overflow-scrolling: touch; /* Scrolling halus di iOS */
+            margin-bottom: 16px;
+        }
+        .table-responsive > .table {
+            margin-bottom: 0;
+            /* min-width diterapkan oleh Tailwind class 'min-w-full' di JS,
+               yang membantu tabel mengambil lebar penuh dari kontainer .table-responsive.
+               Jika konten (karena white-space: nowrap) lebih lebar, scroll akan aktif. */
+        }
+        .table-responsive > .table > thead > tr > th,
+        .table-responsive > .table > tbody > tr > th,
+        .table-responsive > .table > tfoot > tr > th,
+        .table-responsive > .table > thead > tr > td,
+        .table-responsive > .table > tbody > tr > td,
+        .table-responsive > .table > tfoot > tr > td {
+            white-space: nowrap; /* Mencegah teks dalam sel untuk wrap, memaksa tabel melebar */
+        }
+
+        @media (max-width: 768px) {
+            /* Untuk .table-responsive di mobile, kita hanya memastikan overflow-x: auto bekerja.
+               Tidak perlu lagi mengubah display tabel menjadi tumpukan kartu. */
+        }
+    </style>
+</head>
+<body class="font-sans bg-gray-100 dark:bg-slate-900 text-gray-800 dark:text-gray-100">
+
+    <nav class="fixed top-0 left-0 right-0 z-50 bg-white dark:bg-slate-900 shadow-md dark:shadow-none px-4 py-2 flex items-center justify-between border-b border-gray-200 dark:border-slate-800">
+        <h1 class="text-xl font-bold text-primary dark:text-gold tracking-tight">
+            <span class="font-semibold">Paket</span> <span class="font-normal">Akrab XL</span>
+        </h1>
+        <button id="darkToggle" class="bg-gray-200 dark:bg-slate-800 text-gray-700 dark:text-white px-3 py-1 rounded-full text-sm
+                                         hover:bg-gray-300 dark:hover:bg-slate-700 transition-colors duration-200
+                                         shadow-sm dark:shadow-none">
+            <span role="img" aria-label="dark mode">🌙</span> Mode
+        </button>
+    </nav>
+
+    <header class="text-center py-10 px-4 mt-16 bg-gradient-to-b from-white dark:from-slate-900 to-gray-50 dark:to-slate-800">
+        <h2 class="text-2xl sm:text-3xl font-semibold text-primary dark:text-gold drop-shadow-md leading-snug">
+            <span role="img" aria-label="sparkles">✨</span> Internet Hemat & Kencang
+            </h2>
+        <p class="mt-2 text-base text-gray-600 dark:text-gray-300 max-w-xl mx-auto">
+            Pilih Paket Akrab XL & AXIS untuk Semua Kebutuhanmu.
+        </p>
+    </header>
+
+    <section id="paketList" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 px-4 max-w-6xl mx-auto mb-16">
+        </section>
+
+    <div id="modal" class="fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm flex items-center justify-center z-50 hidden p-4">
+        <div id="modalBox" class="bg-white dark:bg-slate-800 p-8 rounded-xl w-full max-w-sm shadow-shopee-xl scale-95 opacity-0 transition-all transform relative">
+            <button onclick="closeModal()" class="absolute top-4 right-4 text-gray-500 hover:text-red-500 text-2xl transition-colors duration-200">
+                <i class="fas fa-times-circle"></i>
+            </button>
+            <h2 id="modalTitle" class="text-2xl font-bold text-primary dark:text-gold mb-3"></h2>
+            <p id="modalDesc" class="text-sm text-gray-600 dark:text-gray-300 mb-4"></p>
+            <p id="modalPrice" class="text-red-600 font-bold text-3xl mb-5"></p>
+            <input type="tel" id="userNumber" placeholder="Masukkan No XL (08xxxx)"
+                   class="w-full p-3 rounded-md border border-gray-300 dark:border-slate-600 focus:outline-none focus:ring-2 focus:ring-primary
+                          dark:focus:ring-gold mb-5 bg-white dark:bg-slate-700 text-gray-800 dark:text-white text-base" />
+            <button onclick="sendToWhatsApp()" class="w-full bg-primary hover:bg-red-600 text-white py-3 rounded-full font-semibold text-lg transition-colors duration-200 shadow-md hover:shadow-lg">
+                Konfirmasi Beli <i class="fas fa-shopping-cart ml-2"></i>
+            </button>
+        </div>
+    </div>
+
+    <section class="px-4 max-w-6xl mx-auto mb-28">
+        <h2 class="text-xl font-semibold text-gray-900 dark:text-white mb-3">Riwayat Pembelian (500 Terakhir)</h2>
+        <div id="lastPurchases" class="table-responsive">
+            </div>
+        <div id="paginationContainer" class="flex justify-center items-center mt-4 space-x-2">
+             </div>
+    </section>
+
+    <script>
+        const modal = document.getElementById('modal');
+        const modalBox = document.getElementById('modalBox');
+        let selectedPackage = {};
+        let paketData = [];
+
+        // Variables for Pagination
+        let allPurchases = []; // To store all fetched data (up to 100)
+        let currentPage = 1;
+        const itemsPerPage = 10;
+        const maxTotalItems = 500; // Maximum items to display in total across all pages
+        const lastPurchasesDiv = document.getElementById('lastPurchases');
+        const paginationContainer = document.getElementById('paginationContainer');
+
+
+        // Fetch paket data from paket.json
+        fetch('paket.json')
+            .then(res => res.json())
+            .then(data => {
+                paketData = data;
+                renderPaketCards(data);
+            })
+            .catch(err => console.error("Gagal memuat paket:", err));
+
+        // Function to render package cards
+        function renderPaketCards(data) {
+            const container = document.getElementById('paketList');
+            container.innerHTML = ''; // Clear previous content
+            data.forEach(pkg => {
+                const hargaDiskon = pkg.discount_price > 0 ? pkg.discount_price : pkg.price;
+                // HTML for displaying price, including original price if discounted
+                const hargaHTML = pkg.discount_price > 0
+                    ? `<div class="flex items-center gap-2">
+                           <p class="text-red-600 font-bold text-xl">Rp ${hargaDiskon.toLocaleString()}</p>
+                           <p class="text-sm line-through text-gray-400 dark:text-gray-500">Rp ${pkg.price.toLocaleString()}</p>
+                         </div>`
+                    : `<p class="text-red-600 font-bold text-xl">Rp ${pkg.price.toLocaleString()}</p>`;
+
+                const card = document.createElement('div');
+                // Tailwind classes for card styling, aiming for Shopee-like appearance
+                // - glass: Custom class for semi-transparent background and blur
+                // - p-6: Padding around the content
+                // - rounded-lg: Large rounded corners
+                // - shadow-shopee-lg: Custom shadow defined in tailwind.config
+                // - transition-all: Smooth transitions for hover effects
+                // - hover:shadow-shopee-xl: Larger shadow on hover
+                // - hover:scale-[1.02]: Slightly enlarge the card on hover
+                // - flex flex-col justify-between: Use flexbox to stack content and push button to bottom
+                card.className = 'glass p-6 rounded-lg shadow-shopee-lg transition-all hover:shadow-shopee-xl hover:scale-[1.02] flex flex-col justify-between';
+                card.innerHTML = `
+                    <div>
+                        <h3 class="text-xl font-semibold text-indigo-700 dark:text-gold mb-2">${pkg.name}</h3>
+                        <p class="text-sm mt-1 text-gray-600 dark:text-gray-300 mb-3 line-clamp-3">${pkg.details}</p>
+                    </div>
+                    <div class="mt-auto">
+                        <div class="my-3">${hargaHTML}</div>
+                        <button onclick="showModal(${pkg.id})"
+                                        class="mt-2 px-4 py-2.5 bg-primary hover:bg-red-600 text-white rounded-md transition-colors duration-200
+                                               font-semibold shadow-md hover:shadow-lg w-full text-base">
+                            <i class="fas fa-shopping-bag mr-2"></i> Beli Sekarang
+                        </button>
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        // Function to show the purchase modal
+        function showModal(id) {
+            const pkg = paketData.find(p => p.id === id);
+            if (!pkg) return;
+
+            selectedPackage = pkg;
+            document.getElementById('modalTitle').textContent = pkg.name;
+            document.getElementById('modalDesc').textContent = pkg.details;
+
+            const price = pkg.discount_price > 0 ? pkg.discount_price : pkg.price;
+            document.getElementById('modalPrice').textContent = `Rp ${price.toLocaleString()}`;
+
+            modal.classList.remove('hidden');
+            setTimeout(() => {
+                modalBox.classList.remove('opacity-0', 'scale-95');
+                modalBox.classList.add('opacity-100', 'scale-100');
+            }, 50);
+        }
+
+        // Function to close the purchase modal
+        function closeModal() {
+            modalBox.classList.remove('opacity-100', 'scale-100');
+            modalBox.classList.add('opacity-0', 'scale-95');
+            setTimeout(() => {
+                modal.classList.add('hidden');
+                document.getElementById('userNumber').value = ''; // Clear input field
+            }, 300);
+        }
+
+        // Function to send purchase details via WhatsApp
+        function sendToWhatsApp() {
+            const phone = document.getElementById('userNumber').value.trim();
+            // Simple validation: starts with 08, followed by 8-12 digits
+            if (!/^08\d{8,12}$/.test(phone)) {
+                alert("Nomor HP tidak valid. Gunakan format 08xxxxxxxxxx");
+                return;
+            }
+
+            const price = selectedPackage.discount_price > 0 ? selectedPackage.discount_price : selectedPackage.price;
+            // Using Unicode for emojis as requested implicitly by the original code structure
+            const msg = `Halo Admin, saya ingin beli paket:\n\n\uD83D\uDCE6 *${selectedPackage.name}*\n\uD83D\uDCC4 ${selectedPackage.details}\n\uD83E\uDEA0 Rp ${price.toLocaleString()}\n\nNomor saya: ${phone}`;
+             // Sanitize WA number: remove non-digits, replace leading 0 with 62
+            const waNumber = selectedPackage.wa_admin.replace(/^0/, '62').replace(/\D/g, '');
+
+            // Add the purchase to local storage for display (this is simulated, not server-side)
+            const today = new Date().toISOString().slice(0, 10); //YYYY-MM-DD format
+            const newPurchase = {
+                tanggal: today,
+                jenis_paket: selectedPackage.name,
+                nomor_hp: phone.replace(/\d{3}$/, '***') // Mask last 3 digits
+                // Status is hardcoded as 'Sukses' in the display logic
+            };
+            // Add to the beginning of the local array, keep maxTotalItems
+            allPurchases.unshift(newPurchase);
+            if (allPurchases.length > maxTotalItems) {
+                allPurchases = allPurchases.slice(0, maxTotalItems);
+            }
+
+            // Sort allPurchases by tanggal descending before rendering
+            allPurchases.sort((a, b) => {
+                if (a.tanggal < b.tanggal) return 1;
+                if (a.tanggal > b.tanggal) return -1;
+                return 0;
+            });
+
+            // Re-render the table and pagination after a successful "purchase" and sorting
+            currentPage = 1; // Go back to the first page
+            renderPurchasesTable(allPurchases.slice(0, itemsPerPage));
+            renderPagination(allPurchases.length);
+
+
+            window.open(`https://wa.me/${waNumber}?text=${encodeURIComponent(msg)}`, '_blank');
+            closeModal();
+        }
+
+        // Dark mode toggle functionality
+        document.getElementById('darkToggle').addEventListener('click', () => {
+            document.documentElement.classList.toggle('dark');
+        });
+
+        // --- Pagination & Purchase History Rendering ---
+
+        // Function to render the purchase history table
+        function renderPurchasesTable(dataToDisplay) {
+            lastPurchasesDiv.innerHTML = ''; // Clear previous content
+
+            if (!dataToDisplay || dataToDisplay.length === 0) {
+                lastPurchasesDiv.innerHTML = '<p class="text-center text-gray-500 dark:text-gray-400">Belum ada data pembelian.</p>';
+                return;
+            }
+
+            const table = document.createElement('table');
+            table.style.width = '100%'; // Sebaiknya width diatur agar bisa lebih kecil dari kontainer jika konten sedikit
+            table.style.borderCollapse = 'collapse';
+            // table.style.marginTop = '20px'; // Tailwind class 'mt' bisa digunakan jika perlu
+            // Kelas 'table' ditambahkan untuk dicocokkan dengan .table-responsive > .table jika ada style spesifik
+            table.className = 'min-w-full divide-y divide-gray-200 dark:divide-slate-700 shadow-md rounded-lg overflow-hidden table';
+
+            const thead = document.createElement('thead');
+            thead.className = 'bg-gray-50 dark:bg-slate-800';
+            const headerRow = document.createElement('tr');
+            const headers = ["No.", "Tanggal", "Jenis Paket", "Nomor HP", "Status"];
+            headers.forEach(headerText => {
+                const th = document.createElement('th');
+                th.scope = "col";
+                // data-title masih diset, meskipun tidak digunakan lagi oleh CSS td:before di mobile
+                th.setAttribute('data-title', headerText);
+                th.className = 'px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider border-b border-gray-200 dark:border-slate-700';
+                th.textContent = headerText;
+                headerRow.appendChild(th);
+            });
+            thead.appendChild(headerRow);
+            table.appendChild(thead);
+
+            const tbody = document.createElement('tbody');
+            tbody.className = 'bg-white dark:bg-slate-900 divide-y divide-gray-200 dark:divide-slate-700';
+
+            dataToDisplay.forEach((item, index) => {
+                const row = document.createElement('tr');
+                if (index % 2 === 0) {
+                    row.className = 'bg-gray-50 dark:bg-slate-800/50';
+                }
+
+                // Use the 'nomor' field for the first column (No.)
+                const cellsData = [
+                    item.nomor || '-', // Use 'nomor' instead of calculated index
+                    item.tanggal || '-',
+                    item.jenis_paket || '-',
+                    item.nomor_hp || '-',
+                    'Sukses'
+                ];
+
+                const classes = [
+                    'px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-white', // No.
+                    'px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300', // Tanggal
+                    'px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300', // Jenis Paket
+                    'px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300', // Nomor HP
+                    'px-6 py-4 whitespace-nowrap text-sm font-medium text-green-600 dark:text-green-400' // Status (Sukses)
+                ];
+
+
+                cellsData.forEach((cellData, cellIndex) => {
+                    const cell = document.createElement('td');
+                    cell.className = classes[cellIndex] + ' border-b border-gray-200 dark:border-gray-700';
+                    // data-title masih diset, meskipun tidak digunakan lagi oleh CSS td:before di mobile
+                    cell.setAttribute('data-title', headers[cellIndex]);
+                    cell.textContent = cellData;
+                    row.appendChild(cell);
+                });
+
+                tbody.appendChild(row);
+                table.appendChild(tbody);
+            });
+
+            lastPurchasesDiv.appendChild(table);
+        }
+
+        // Function to render pagination buttons
+        function renderPagination(totalItems) {
+            paginationContainer.innerHTML = '';
+
+            if (totalItems <= itemsPerPage) {
+                return;
+            }
+
+            const totalPages = Math.ceil(totalItems / itemsPerPage);
+
+            // Previous button
+            const prevButton = document.createElement('button');
+            prevButton.textContent = 'Sebelumnya';
+            prevButton.className = `px-3 py-1 rounded-md text-sm font-medium transition-colors duration-200 ${
+                currentPage === 1
+                    ? 'bg-gray-300 text-gray-600 cursor-not-allowed dark:bg-slate-700 dark:text-gray-500'
+                    : 'bg-primary text-white hover:bg-red-600 dark:bg-gold dark:text-gray-900 dark:hover:bg-yellow-600'
+            }`;
+            prevButton.disabled = currentPage === 1;
+            prevButton.onclick = () => changePage(currentPage - 1);
+            paginationContainer.appendChild(prevButton);
+
+            // Page number buttons
+            const pageLimit = 5;
+            let startPage = Math.max(1, currentPage - Math.floor(pageLimit / 2));
+            let endPage = Math.min(totalPages, startPage + pageLimit - 1);
+
+            if (endPage - startPage + 1 < pageLimit) {
+                startPage = Math.max(1, endPage - pageLimit + 1);
+            }
+
+
+            for (let i = startPage; i <= endPage; i++) {
+                const pageButton = document.createElement('button');
+                pageButton.textContent = i;
+                pageButton.className = `px-3 py-1 rounded-md text-sm font-medium transition-colors duration-200 ${
+                    i === currentPage
+                        ? 'bg-primary text-white shadow-sm dark:bg-gold dark:text-gray-900 dark:shadow-gold'
+                        : 'bg-gray-200 text-gray-700 hover:bg-gray-300 dark:bg-slate-800 dark:text-white dark:hover:bg-slate-700'
+                }`;
+                pageButton.onclick = () => changePage(i);
+                paginationContainer.appendChild(pageButton);
+            }
+
+            // Next button
+            const nextButton = document.createElement('button');
+            nextButton.textContent = 'Selanjutnya';
+             nextButton.className = `px-3 py-1 rounded-md text-sm font-medium transition-colors duration-200 ${
+                currentPage === totalPages
+                    ? 'bg-gray-300 text-gray-600 cursor-not-allowed dark:bg-slate-700 dark:text-gray-500'
+                    : 'bg-primary text-white hover:bg-red-600 dark:bg-gold dark:text-gray-900 dark:hover:bg-yellow-600'
+             }`;
+            nextButton.disabled = currentPage === totalPages;
+            nextButton.onclick = () => changePage(currentPage + 1);
+            paginationContainer.appendChild(nextButton);
+        }
+
+        // Function to change the current page of the purchase history
+        function changePage(newPage) {
+            const totalPages = Math.ceil(allPurchases.length / itemsPerPage);
+            if (newPage >= 1 && newPage <= totalPages) {
+                currentPage = newPage;
+                const startIndex = (currentPage - 1) * itemsPerPage;
+                const endIndex = startIndex + itemsPerPage;
+                const dataForPage = allPurchases.slice(startIndex, endIndex);
+                renderPurchasesTable(dataForPage);
+                renderPagination(allPurchases.length);
+            }
+        }
+
+        // Fetch purchase history data from apigithub.php
+        fetch('apigithub.php')
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                return response.json();
+            })
+            .then(data => {
+                let purchasesArray = [];
+                if (Array.isArray(data)) {
+                    purchasesArray = data;
+                } else if (typeof data === 'object' && data !== null) {
+                    // Convert object values to array, ensuring 'nomor' is included
+                    purchasesArray = Object.keys(data).map(key => {
+                        return {
+                            nomor: key, // Use the key as 'nomor'
+                            ...data[key] // Spread other properties
+                        };
+                    });
+                } else {
+                     console.error('Format data pembelian tidak dikenali:', data);
+                     lastPurchasesDiv.innerHTML = '<p class="text-red-500 dark:text-red-400">Gagal memuat data pembelian atau format data tidak valid.</p>';
+                     return;
+                }
+
+                allPurchases = purchasesArray.slice(0, maxTotalItems);
+
+                // Sort allPurchases by tanggal descending after fetching
+                allPurchases.sort((a, b) => {
+                    if (a.tanggal < b.tanggal) return 1;
+                    if (a.tanggal > b.tanggal) return -1;
+                    return 0;
+                });
+
+
+                renderPurchasesTable(allPurchases.slice(0, itemsPerPage));
+                renderPagination(allPurchases.length);
+            })
+            .catch(error => {
+                console.error('Gagal mengambil data pembelian:', error);
+                lastPurchasesDiv.innerHTML = `<p class="text-red-500 dark:text-red-400">Terjadi kesalahan saat memuat data pembelian: ${error.message}</p>`;
+                paginationContainer.innerHTML = '';
+            });
+
+    </script>
+</body>
+</html>
